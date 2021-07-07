@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:login_app/Screen/Login_screen.dart';
 import 'package:login_app/component/button.dart';
 import '../constant.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -35,14 +36,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0XffC2D3E0),
-                              Color(0X8CC2D3E0),
-                              Color(0X59C2D3E0),
-                              Color(0X1AC2D3E0)
-                            ]),
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0XffC2D3E0),
+                            Color(0X8CC2D3E0),
+                            Color(0X59C2D3E0),
+                            Color(0X1AC2D3E0)
+                          ],
+                        ),
                       ),
                       child: SingleChildScrollView(
                         padding:
@@ -63,11 +65,9 @@ class _SignupScreenState extends State<SignupScreen> {
                               onChanged: (value) {
                                 email = value;
                               },
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter Email";
-                                }
-                              },
+                              validator: (value) => (value!.isEmpty)
+                                  ? ' Please enter email'
+                                  : null,
                               textAlign: TextAlign.center,
                               decoration: kTextFieldDecoration.copyWith(
                                 hintText: 'Enter Your Email',
@@ -102,22 +102,41 @@ class _SignupScreenState extends State<SignupScreen> {
                               title: 'Register',
                               ontapp: () async {
                                 if (formkey.currentState!.validate()) {
+                                  setState(() {
+                                    isloading = true;
+                                  });
                                   try {
                                     final newUser = await _auth
                                         .createUserWithEmailAndPassword(
                                             email: email, password: password);
                                     if (newUser != null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Colors.blueAccent,
+                                          content: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                                'Sucessfully Register.You Can Login Now'),
+                                          ),
+                                          duration: Duration(seconds: 5),
+                                        ),
+                                      );
                                       await Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => LoginScreen(),
                                         ),
                                       );
                                     }
+                                    setState(() {
+                                      isloading = false;
+                                    });
                                   } on FirebaseAuthException catch (e) {
                                     showDialog(
                                       context: context,
                                       builder: (ctx) => AlertDialog(
-                                        title: Text(' Ops! Regitration Failed'),
+                                        title:
+                                            Text(' Ops! Registration Failed'),
                                         content: Text('${e.message}'),
                                         actions: [
                                           TextButton(
@@ -130,6 +149,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ),
                                     );
                                   }
+                                  setState(() {
+                                    isloading = false;
+                                  });
                                 }
                               },
                             ),
