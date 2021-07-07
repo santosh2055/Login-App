@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:login_app/Screen/Login_screen.dart';
 import 'package:login_app/component/button.dart';
 import '../constant.dart';
-import 'package:email_validator/email_validator.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
