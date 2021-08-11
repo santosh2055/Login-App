@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Welcome You are LogIn'),
-      ),
-      body: Center(
-        child: Text('Home page'),
+      body: Center(child: Text('Hello login'),
       ),
     );
   }
